@@ -16,7 +16,7 @@ The data layer exposes methods returning `Eff[R, ?]` and it uses Slick to access
 Since Slick operations return `Future`s, the `fromFuture` method from Eff's `AsyncFutureInterpreter` is used to send them into an `Async` effect.
 
 ## Errors
-Errors are part of the effect stack, using the `Either` effect. Currently their serialization is naive (they are returned as a 200).
+Errors are part of the effect stack, using the `Either` effect.
 
 ## Try this out
 

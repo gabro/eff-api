@@ -15,6 +15,7 @@ import models._
 import controllers._
 import data._
 import EffectStackMarshaller._
+import ResultMarshaller._
 
 object Boot extends App {
 
