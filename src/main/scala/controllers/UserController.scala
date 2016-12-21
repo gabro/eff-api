@@ -16,15 +16,15 @@ trait UserController {
 
 class UserControllerProd(userData: UserData) extends UserController {
 
-  private[this] def updateEff[R: _result : _async: _log](id: Int, user: User): Eff[R, User] = for {
-    _     <- tell(LogEntry(s"I'm the controller updating user $id"))
-    _     <- userData.update(id, user)
-    user  <- userData.findById(id)
+  private[this] def findByIdEff[R: _result : _async: _log : _requestId](id: Int): Eff[R, User] = for {
+    _    <- log(s"UserController: finding user with id $id")
+    user <- userData.findById(id)
   } yield user
 
-  private[this] def findByIdEff[R: _result : _async: _log](id: Int): Eff[R, User] = for {
-    _    <- tell(LogEntry(s"I'm the controller finding user $id"))
-    user <- userData.findById(id)
+  private[this] def updateEff[R: _result : _async: _log : _requestId](id: Int, user: User): Eff[R, User] = for {
+    _    <- log(s"UserController: updating user with id $id")
+    _     <- userData.update(id, user)
+    user  <- userData.findById(id)
   } yield user
 
   override def findById(id: Int): Eff[Stack, User] = findByIdEff(id)

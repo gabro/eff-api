@@ -16,12 +16,14 @@ package object example {
 
   type LogWriter[A] = Writer[LogEntry, A]
   type Result[+A] = Either[LogicError, A]
+  type RequestIdReader[A] = Reader[RequestId, A]
 
-  type Stack = Fx.fx3[LogWriter, Async, Result]
+  type Stack = Fx.fx4[LogWriter, Async, Result, RequestIdReader]
 
   type _log[R] = LogWriter |= R
   type _async[R] = Async |= R
   type _result[R] = Result |= R
+  type _requestId[R] = RequestIdReader |= R
 
   val futureInterpreter = {
     import scala.concurrent.ExecutionContext.Implicits.global
@@ -30,9 +32,18 @@ package object example {
   import futureInterpreter._
 
   def runEffect[A](eff: Eff[Stack, A]): Future[Result[A]] =
-    eff.runEither.runWriter.runAsyncFuture.map { case (result, logs) =>
-      logs.foreach(println)
-      result
-    }
+    eff
+      .runReader(RequestId.generate)
+      .runEither
+      .runWriter
+      .runAsyncFuture.map { case (result, logs) =>
+        logs.foreach(println)
+        result
+      }
+
+  def log[R: _log: _requestId](message: String): Eff[R, RequestId] = for {
+    requestId <- ask
+    _         <- tell(LogEntry(message, Some(requestId)))
+  } yield requestId
 
 }
