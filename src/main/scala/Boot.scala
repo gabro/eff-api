@@ -14,6 +14,7 @@ import slick.jdbc.H2Profile.api._
 import models._
 import controllers._
 import data._
+import EffectStackMarshaller._
 
 object Boot extends App {
 

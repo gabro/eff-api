@@ -2,7 +2,7 @@ package example
 package controllers
 
 import scala.concurrent.Future
-import org.atnos.eff.Eff
+import org.atnos.eff._
 import org.atnos.eff.all._
 import org.atnos.eff.syntax._
 
@@ -10,8 +10,8 @@ import models._
 import data._
 
 trait UserController {
-  def findById(id: Int): Future[Result[User]]
-  def update(id: Int, user: User): Future[Result[User]]
+  def findById(id: Int): Eff[Stack, User]
+  def update(id: Int, user: User): Eff[Stack, User]
 }
 
 class UserControllerProd(userData: UserData) extends UserController {
@@ -27,10 +27,8 @@ class UserControllerProd(userData: UserData) extends UserController {
     user <- userData.findById(id)
   } yield user
 
-  override def findById(id: Int): Future[Result[User]] =
-    runEffect(findByIdEff(id))
+  override def findById(id: Int): Eff[Stack, User] = findByIdEff(id)
 
-  override def update(id: Int, user: User): Future[Result[User]] =
-    runEffect(updateEff(id, user))
+  override def update(id: Int, user: User): Eff[Stack, User] = updateEff(id, user)
 
 }

@@ -7,10 +7,9 @@ The router layer uses akka-http. This part is the less structured, as it was of 
 The JSON (de)serialization is fully automatic thanks to circe.
 
 ### Controller
-The `UserController` interface publicly exposes methods returning `Future[Result[?]]` (where `Result[?]` is `Either[LogicError, ?]]`.
-Internally it uses `Eff` for composing effects, which are then run upon request.
+The `UserController` interface publicly exposes methods returning `Eff[Stack, ?]` and it uses `Eff` internally for composition of the business logic.
 
-The effect stack in which the effects are run and the `runEffect` method are defined in `package.scala`.
+The effect stack is run by a custom `Marshaller` defined in `EffectStackMarshaller.scala`, which uses the `runEffect` method, defined in `package.scala`.
 
 ### Data
 The data layer exposes methods returning `Eff[R, ?]` and it uses Slick to access the database and perform SQL queries.
