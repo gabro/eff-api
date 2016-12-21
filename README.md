@@ -23,8 +23,15 @@ Errors are part of the effect stack, using the `Either` effect. Currently their 
 
 Just clone the project and then
 
-```
+```bash
 sbt run
 ```
 
 The API uses to an in-memory H2 db, and no configuration is required.
+
+Once the server has started, you can try the following HTTP requests (the examples below use [`httpie`](https://httpie.org/))
+
+```bash
+http GET localhost:8080/users/1
+http PUT localhost:8080/users/2 id:=2 username=Test
+```
