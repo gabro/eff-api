@@ -22,7 +22,7 @@ class UserControllerProd(userData: UserData) extends UserController {
   } yield user
 
   private[this] def updateEff[R: _result : _async: _log : _requestId](id: Int, user: User): Eff[R, User] = for {
-    _    <- log(s"UserController: updating user with id $id")
+    _     <- log(s"UserController: updating user with id $id")
     _     <- userData.update(id, user)
     user  <- userData.findById(id)
   } yield user
